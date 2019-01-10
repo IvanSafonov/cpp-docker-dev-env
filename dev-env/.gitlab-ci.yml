@@ -1,0 +1,28 @@
+variables:
+  REGISTRY: '<your docker registry>:5000'
+
+stages:
+  - build-env
+  - dev-env
+
+build-env:
+  stage: build-env
+  script:
+    - cd build-env
+    - IMAGE_NAME='build-env'
+    - docker build --network host -t $IMAGE_NAME .
+    - docker image tag $IMAGE_NAME $REGISTRY/$IMAGE_NAME
+    - docker push $REGISTRY/$IMAGE_NAME
+  only:
+    - master
+
+dev-env:
+  stage: dev-env
+  script:
+    - cd dev-env
+    - IMAGE_NAME='dev-env'
+    - docker build --network host -t $IMAGE_NAME .
+    - docker image tag $IMAGE_NAME $REGISTRY/$IMAGE_NAME
+    - docker push $REGISTRY/$IMAGE_NAME
+  only:
+    - master
